@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trung Tâm Nạp Thẻ</title>
+    <style>
+        /* CSS Tạo giao diện */
+        * { box-sizing: border-box; font-family: Arial, sans-serif; margin: 0; padding: 0; }
+        body { background-color: #f5f5f5; color: #333; }
+        
+        /* Header */
+        .header { background: #fff; padding: 10px 15px; display: flex; align-items: center; border-bottom: 1px solid #ddd; }
+        .logo { color: #d32f2f; font-weight: bold; font-size: 20px; display: flex; align-items: center; gap: 5px; }
+        .logo-icon { font-size: 24px; }
+        .header-text { font-size: 14px; font-weight: bold; margin-left: 10px; color: #333; }
+        
+        /* Banner */
+        .banner { background: linear-gradient(135deg, #5c2e16, #a67c52); color: white; padding: 20px 15px; border-radius: 10px; margin: 15px; display: flex; align-items: center; justify-content: space-between; background-image: url('https://i.imgur.com/7Y6B5wK.jpeg'); background-size: cover; background-position: center; position: relative; }
+        .banner::before { content: ""; position: absolute; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.4); border-radius: 10px; }
+        .banner-content { position: relative; z-index: 1; }
+        .banner-title { font-size: 22px; font-weight: bold; margin-bottom: 5px; }
+        .banner-badge { background: rgba(0,0,0,0.7); padding: 5px 10px; border-radius: 5px; font-size: 12px; display: inline-block; }
+
+        /* Container chung */
+        .container { padding: 0 15px; }
+        
+        /* Tiêu đề bước */
+        .step-title { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: bold; margin: 20px 0 15px 0; }
+        .step-number { background: #d32f2f; color: white; width: 25px; height: 25px; display: flex; justify-content: center; align-items: center; border-radius: 5px; font-size: 14px; }
+
+        /* Box Đăng nhập */
+        .login-box { background: #fff; border-radius: 10px; padding: 15px; border: 1px solid #e0e0e0; }
+        .input-group { display: flex; margin-bottom: 10px; }
+        .input-group input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 5px 0 0 5px; outline: none; font-size: 14px; }
+        .input-group button { padding: 0 20px; background: #c62828; color: white; border: none; border-radius: 0 5px 5px 0; font-weight: bold; cursor: pointer; }
+        .input-group button:hover { background: #b71c1c; }
+        
+        .social-login { display: flex; align-items: center; justify-content: space-between; margin-top: 15px; font-size: 13px; color: #666; }
+        .social-icons { display: flex; gap: 10px; }
+        .social-icon { width: 35px; height: 35px; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-weight: bold; font-size: 12px; cursor: pointer;}
+        .fb { background: #1877f2; } .gg { background: #ea4335; } .x { background: #000; } .vk { background: #0077ff; }
+
+        /* Phần Mệnh giá (Ẩn lúc đầu) */
+        #recharge-section { display: none; }
+        
+        .tabs { display: flex; gap: 10px; margin-bottom: 15px; }
+        .tab { padding: 8px 15px; border-radius: 20px; border: 1px solid #ccc; background: #fff; cursor: pointer; font-size: 14px; }
+        .tab.active { border-color: #d32f2f; color: #d32f2f; font-weight: bold; background: #ffebee; }
+
+        /* Lưới mệnh giá */
+        .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .card-item { background: #fff; border: 1px solid #ccc; border-radius: 8px; text-align: center; cursor: pointer; overflow: hidden; transition: 0.2s; }
+        .card-item:hover { border-color: #d32f2f; }
+        .card-item.selected { border: 2px solid #d32f2f; background: #fff5f5; }
+        .card-price { padding: 10px 0 5px; font-weight: bold; font-size: 15px; }
+        .card-diamond { background: #eaeaea; padding: 5px 0; font-size: 13px; color: #555; display: flex; justify-content: center; align-items: center; gap: 5px;}
+        .card-diamond span { color: #00bcd4; font-size: 16px;}
+
+        /* Nút Nạp */
+        .submit-btn { width: 100%; padding: 15px; background: #c62828; color: white; font-size: 18px; font-weight: bold; border: none; border-radius: 8px; margin-top: 20px; cursor: pointer; display: none;}
+        .submit-btn:hover { background: #b71c1c; }
+        
+        /* Thông báo lỗi */
+        .error-msg { color: red; font-size: 13px; margin-top: 5px; display: none; }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            <span class="logo-icon">🛡️</span> Garena
+        </div>
+        <div class="header-text">Trung tâm nạp<br>thẻ chính thức</div>
+    </div>
+
+    <!-- Banner -->
+    <div class="banner">
+        <div class="banner-content">
+            <div class="banner-title">Free Fire</div>
+            <div class="banner-badge">🛡️ Thanh toán an toàn 100%</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- BƯỚC 1: ĐĂNG NHẬP -->
+        <div class="step-title">
+            <div class="step-number">1</div> Đăng nhập
+        </div>
+        
+        <div class="login-box">
+            <label style="font-size: 14px; font-weight: bold; margin-bottom: 8px; display: block;">ID người chơi ⓘ</label>
+            <div class="input-group">
+                <!-- Chỉ cho phép nhập số bằng oninput -->
+                <input type="text" id="uid-input" placeholder="Hãy nhập UID của bạn" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                <button onclick="handleLogin()">Đăng nhập</button>
+            </div>
+            <div id="login-error" class="error-msg">Vui lòng nhập UID (chỉ bao gồm số)!</div>
+            
+            <div class="social-login">
+                <span>Hoặc đăng nhập bằng tài khoản game của bạn</span>
+                <div class="social-icons">
+                    <div class="social-icon fb">f</div>
+                    <div class="social-icon gg">G</div>
+                    <div class="social-icon x">X</div>
+                    <div class="social-icon vk">VK</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BƯỚC 2: MỆNH GIÁ NẠP (Ban đầu bị ẩn) -->
+        <div id="recharge-section">
+            <div class="step-title">
+                <div class="step-number">2</div> Mệnh giá nạp
+            </div>
+
+            <div class="tabs">
+                <div class="tab active">Nạp Online</div>
+                <div class="tab">Thẻ Garena</div>
+                <div class="tab">Shop</div>
+            </div>
+
+            <div class="card-grid" id="card-grid">
+                <!-- Dữ liệu thẻ sẽ được render bằng JS ở đây -->
+            </div>
+
+            <button class="submit-btn" id="submit-btn" onclick="handleRecharge()">Xác nhận nạp</button>
+        </div>
+    </div>
+
+    <script>
+        // Dữ liệu mệnh giá
+        const cardData = [
+            { price: "5.000 đ", diamond: 25 },
+            { price: "10.000 đ", diamond: 51 },
+            { price: "20.000 đ", diamond: 113 },
+            { price: "50.000 đ", diamond: 283 },
+            { price: "100.000 đ", diamond: 566 },
+            { price: "200.000 đ", diamond: 1.132 },
+            { price: "500.000 đ", diamond: 2.830 },
+            { price: "1.000.000 đ", diamond: 5.750 },
+            { price: "2.000.000 đ", diamond: 11.500 }
+        ];
+
+        let selectedCard = null;
+        let currentUID = "";
+
+        // Hàm render danh sách thẻ
+        function renderCards() {
+            const grid = document.getElementById('card-grid');
+            grid.innerHTML = '';
+            cardData.forEach((card, index) => {
+                const div = document.createElement('div');
+                div.className = 'card-item';
+                div.onclick = () => selectCard(div, card);
+                div.innerHTML = `
+                    <div class="card-price">${card.price}</div>
+                    <div class="card-diamond"><span>💎</span> ${card.diamond}</div>
+                `;
+                grid.appendChild(div);
+            });
+        }
+
+        // Xử lý khi chọn thẻ
+        function selectCard(element, card) {
+            // Bỏ chọn tất cả
+            document.querySelectorAll('.card-item').forEach(el => el.classList.remove('selected'));
+            // Chọn thẻ hiện tại
+            element.classList.add('selected');
+            selectedCard = card;
+            // Hiện nút xác nhận nạp
+            document.getElementById('submit-btn').style.display = 'block';
+        }
+
+        // Xử lý Đăng Nhập
+        function handleLogin() {
+            const uidInput = document.getElementById('uid-input').value;
+            const errorMsg = document.getElementById('login-error');
+
+            if (uidInput.trim() === "") {
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            // Thành công
+            errorMsg.style.display = 'none';
+            currentUID = uidInput;
+            
+            // Ẩn bước 1 (có thể ẩn đi cho giống thực tế, hoặc giữ nguyên và hiện bước 2)
+            document.querySelector('.login-box').style.opacity = '0.5';
+            document.querySelector('.login-box').style.pointerEvents = 'none';
+            document.getElementById('uid-input').disabled = true;
+            document.querySelector('.input-group button').disabled = true;
+
+            // Hiện bước 2
+            document.getElementById('recharge-section').style.display = 'block';
+            
+            // Render thẻ
+            renderCards();
+            
+            // Cuộn xuống phần mệnh giá
+            document.getElementById('recharge-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Xử lý Nạp Thẻ (Gửi thông tin cho Admin)
+        function handleRecharge() {
+            if (!selectedCard) {
+                alert("Vui lòng chọn mệnh giá nạp!");
+                return;
+            }
+
+            // TẠO DỮ LIỆU GỬI ĐI (Dành cho Admin)
+            const orderData = {
+                uid: currentUID,
+                price: selectedCard.price,
+                diamond: selectedCard.diamond,
+                time: new Date().toLocaleString('vi-VN'),
+                status: "Chờ xử lý"
+            };
+
+            // GIẢ LẬP: Hiển thị thông báo admin nhận được
+            // Trong thực tế, bạn sẽ dùng fetch() để gửi orderData lên server/Telegram/Discord của bạn
+            alert(`🔔 THÔNG BÁO ADMIN NHẬN ĐƯỢC THẺ:\n\n- UID: ${orderData.uid}\n- Mệnh giá: ${orderData.price}\n- Kim cương: ${orderData.diamond}\n- Thời gian: ${orderData.time}\n\n(Trong thực tế, dữ liệu này sẽ được gửi về Telegram/Webhook của Admin)`);
+
+            // Reset lại trạng thái sau khi nạp (tùy chọn)
+            // location.reload(); 
+        }
+    </script>
+</body>
+</html>
